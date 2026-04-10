@@ -19,8 +19,8 @@ This project explores low-level memory management concepts in operating systems 
 4. In Part 2, both processes should show the same physical address, demonstrating shared memory
 
 # Troubleshooting
-  If physical addresses show as 0:
+  1. If physical addresses show as 0:
   Run with sudo
-  If compilation fails:
-  Ensure gcc is installed:
-  sudo apt install build-essential
+  2. If compilation fails:
+  3. Ensure gcc is installed:
+  4. sudo apt install build-essential
