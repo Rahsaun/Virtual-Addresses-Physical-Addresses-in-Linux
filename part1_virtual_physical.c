@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+// Function to convert virtual address to physical address
+uint64_t virtual_to_physical(void *virtual_addr) {
+    uint64_t value;
+    uint64_t page_frame_number;
+    int page_size = getpagesize();
+
+    int fd = open("/proc/self/pagemap", O_RDONLY);
+    if (fd < 0) {
+        perror("Error opening pagemap");
+        return 0;
+    }
+
+    uint64_t offset = ((uint64_t)virtual_addr / page_size) * sizeof(uint64_t);
+
+    if (lseek(fd, offset, SEEK_SET) == -1) {
+        perror("Error seeking pagemap");
+        close(fd);
+        return 0;
+    }
+
+    if (read(fd, &value, sizeof(value)) != sizeof(value)) {
+        perror("Error reading pagemap");
+        close(fd);
+        return 0;
+    }
+
+    close(fd);
+
+    // Check if page is present
+    if (!(value & (1ULL << 63))) {
+        printf("Page not present in memory\n");
+        return 0;
+    }
+
+    // Extract PFN
+    page_frame_number = value & ((1ULL << 55) - 1);
+
+    // Compute physical address
+    uint64_t physical_addr = (page_frame_number * page_size) +
+                             ((uint64_t)virtual_addr % page_size);
+
+    return physical_addr;
+}
+
+// Required function
+void test_function() {
+    int local_var = 42;                   // non-pointer variable
+    int *heap_ptr = malloc(sizeof(int)); // pointer variable
+
+    if (heap_ptr == NULL) {
+        perror("malloc failed");
+        return;
+    }
+
+    *heap_ptr = 100;
+
+    uint64_t phys_local = virtual_to_physical(&local_var);
+    uint64_t phys_heap  = virtual_to_physical(heap_ptr);
+
+    printf("========== PART 1 ==========\n");
+
+    printf("\n[Local Variable]\n");
+    printf("Virtual Address : %p\n", (void*)&local_var);
+    printf("Physical Address: 0x%lx\n", phys_local);
+
+    printf("\n[Heap Variable]\n");
+    printf("Virtual Address : %p\n", (void*)heap_ptr);
+    printf("Physical Address: 0x%lx\n", phys_heap);
+
+    free(heap_ptr);
+}
+
+int main() {
+    test_function();
+    return 0;
+}
