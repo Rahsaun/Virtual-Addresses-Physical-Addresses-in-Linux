@@ -24,3 +24,6 @@ This project explores low-level memory management concepts in operating systems 
   2. If compilation fails:
   3. Ensure gcc is installed:
   4. sudo apt install build-essential
+
+# Analysis
+ Part 1: The virtual to physical address conversion algorithm works by translating a process’s virtual memory address into an actual physical memory location using the operating system’s paging system.First, the program obtains the system page size, and uses it to divide the virtual address into two parts: the virtual page number and the offset within that page.The virtual page number is used to look up the corresponding page table entry in Linux’s /proc/self/pagemap, the program extracts the physical frame number (PFN), which identifies the actual location of the page in physical memory. inally, the physical address is computed using the formula: physical address = (PFN × page size) + offset. This combines the physical page location with the original offset inside the page, producing the final physical memory address that corresponds to the given virtual address.
