@@ -11,12 +11,12 @@ This project explores low-level memory management concepts in operating systems 
    sudo ./part2
 
 # Important Notes 
-  Must be run on a Linux system
+1. Must be run on a Linux system
   Requires access to:
   /proc/self/pagemap
-  Root privileges (sudo) may be required depending on the system configuration
-  Virtual addresses may change between runs
-  In Part 2, both processes should show the same physical address, demonstrating shared memory
+2. Root privileges (sudo) may be required depending on the system configuration
+3. Virtual addresses may change between runs
+4. In Part 2, both processes should show the same physical address, demonstrating shared memory
 
 # Troubleshooting
   If physical addresses show as 0:
